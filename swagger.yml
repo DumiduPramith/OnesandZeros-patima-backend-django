@@ -1,0 +1,109 @@
+openapi: 3.0.0
+info:
+  title: Patima API
+  description: The Patima API provides a non-contact virtual restoration method for headless Buddha statues found in Sri Lanka. 
+    It uses a deep learning model to predict and inpaint a head for the headless Buddha statues. 
+    This API is part of a mobile application that serves as a deliverable of the study. 
+    The API handles the interactions between the mobile application and the deep learning model, 
+    providing endpoints for uploading images of the statues, processing the images, and retrieving the restored images.
+  version: 1.0.0
+servers:
+  - url: http://localhost:8000
+paths:
+  /api/login:
+    post:
+      summary: Login
+      tags:
+        - login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+                role:
+                  type: integer
+                  description: Role of the user (1 for general user, 2 for archaeologist, 3 for admin)
+                  enum: [1, 2, 3]
+                  
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: 'string'
+        '401':
+          description: Unauthorized, login details are incorrect
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: 'string'
+  /api/users/register:
+    post:
+      summary: Register
+      tags:
+        - register
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+                password:
+                  type: string
+                role:
+                  type: number
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: 'string'
+        '409':
+          description: Conflict, user already exists
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: 'string'

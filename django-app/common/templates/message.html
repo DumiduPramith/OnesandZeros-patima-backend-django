@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Confirmation Success</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+    <div class="confirmation-container">
+        <div class="confirmation-card">
+            {% for message in messages %}
+                {% if message.level == 25 %}
+                <h1>{{ message.tags }}</h1>
+                {% elif message.level == 40 %}
+                <h1 style="color: darkred">{{ message.tags }}</h1>
+                {% endif %}
+                <p>{{ message }}</p>
+            {% empty %}
+                <h1>No messages</h1>
+                <p>No messages to display</p>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>

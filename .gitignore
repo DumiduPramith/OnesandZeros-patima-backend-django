@@ -1,0 +1,15 @@
+# created by virtualenv automatically
+bin
+lib
+__pycache__
+pyvenv.cfg
+*.sqlite3
+.idea
+*.json
+test.py
+django-app/patima/.env
+*.log
+.env
+/static
+angular/
+docker-compose.prod.yml

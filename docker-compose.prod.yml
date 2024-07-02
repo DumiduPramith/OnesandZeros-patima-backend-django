@@ -1,0 +1,75 @@
+services:
+  db:
+    container_name: patima-db
+    image: mysql:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_USER_PASSWORD}
+    networks:
+      - db-network
+    ports:
+      - "3306:3306"
+    volumes:
+      - patima-db-data:/var/lib/mysql
+  #      - ./mysql/init.sql:/docker-entrypoint-initdb.d/init.sql
+
+  backend:
+    build:
+      context: django-app
+      dockerfile: Dockerfile
+    container_name: patima-backend
+    environment:
+      DB_NAME: ${MYSQL_DATABASE}
+      DB_USER: ${MYSQL_USER}
+      DB_PASSWORD: ${MYSQL_USER_PASSWORD}
+    command: sh -c "gunicorn patima.wsgi --bind 0.0.0.0:8000"
+    restart: on-failure
+    volumes:
+      - ./django-app:/app
+      - ./static:/app/static
+    networks:
+      - db-network
+      - nginx-network
+    depends_on:
+      - db
+
+  admin-panel:
+    build:
+      context: admin-panel
+      dockerfile: Dockerfile
+    container_name: admin-nginx
+    volumes:
+      - ./admin-panel/nginx.conf:/etc/nginx/nginx.conf
+      - ./admin-panel/conf.d:/etc/nginx/conf.d
+      - ./admin-panel/angular/browser:/usr/share/nginx/html
+      - ./static:/app/static
+    networks:
+      - nginx-network
+
+  nginx:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    container_name: main-nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx/conf.d:/etc/nginx/conf.d
+      - ./static:/app/static
+    networks:
+      - nginx-network
+    depends_on:
+      - admin-panel
+      - backend
+
+volumes:
+  patima-db-data:
+
+networks:
+  db-network:
+    driver: bridge
+  nginx-network:
+    driver: bridge
