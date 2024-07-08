@@ -1,3 +1,5 @@
+version: '3'
+
 services:
   db:
     container_name: patima-db
@@ -48,6 +50,20 @@ services:
     networks:
       - nginx-network
 
+  status-monitor:
+    build:
+      context: status-monitor
+      dockerfile: Dockerfile
+    working_dir: /app/app
+    container_name: status-monitor
+    command: sh -c "uvicorn main:app  --host 0.0.0.0 --port=8001"
+    ports:
+      - "8001:8001"
+    volumes:
+      - ./status-monitor:/app
+    networks:
+      - nginx-network
+
   nginx:
     build:
       context: ./nginx
@@ -64,6 +80,7 @@ services:
     depends_on:
       - admin-panel
       - backend
+      - status-monitor
 
 volumes:
   patima-db-data:

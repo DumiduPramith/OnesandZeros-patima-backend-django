@@ -18,3 +18,21 @@ docker-down:
 .PHONY: docker-initial
 docker-initial:
 	docker exec patima-backend sh -c "make create-tables && make initial-data && make collect-static"
+
+
+.PHONY: docker-full-clear
+docker-full-clear:
+	@containers=$$(docker ps -aq); \
+	if [ -n "$$containers" ]; then \
+		docker rm $$containers; \
+	fi
+
+	@images=$$(docker images -q); \
+	if [ -n "$$images" ]; then \
+		docker rmi $$images; \
+	fi
+
+	@volumes=$$(docker volume ls -q); \
+	if [ -n "$$volumes" ]; then \
+		docker volume rm $$volumes; \
+	fi

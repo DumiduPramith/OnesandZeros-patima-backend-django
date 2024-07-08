@@ -10,6 +10,8 @@ test.py
 django-app/patima/.env
 *.log
 .env
+.env.prod
+.env.dev
 /static
 angular/
 docker-compose.prod.yml

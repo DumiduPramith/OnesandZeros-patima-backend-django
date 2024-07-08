@@ -21,6 +21,7 @@ DATABASES = {
         'PORT': '3306',
     }
 }
-
+print(os.getenv('DB_USER'))
 SECRET_KEY = os.getenv('SECRET_KEY')
+
 SIMPLE_JWT['SIGNING_KEY'] = SECRET_KEY
