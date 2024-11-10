@@ -1,7 +1,8 @@
 import os
 import logging
-from patima.utils.database_handler import DatabaseHandler
 from django.conf import settings
+
+from patima.utils.database_handler import DatabaseHandler
 
 logger = logging.getLogger(__name__)
 

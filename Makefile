@@ -2,14 +2,25 @@
 docker-build:
 	docker compose -f docker-compose.prod.yml build
 
+.PHONY: docker-build-dev
+docker-build-dev:
+	docker compose -f docker-compose.dev.yml build
+
 .PHONY: docker-up
 docker-up:
 	docker compose -f docker-compose.prod.yml up
 
-
 .PHONY: docker-up-d
 docker-up-d:
 	docker compose -f docker-compose.prod.yml up -d
+
+.PHONY: docker-up-dev
+docker-up-dev:
+	docker compose -f docker-compose.dev.yml up
+
+.PHONY: docker-up-dev-d
+docker-up-dev-d:
+	docker compose -f docker-compose.dev.yml up -d
 
 .PHONY: docker-down
 docker-down:

@@ -6,7 +6,8 @@ from prediction.utils.predicted_image_handler import PredictedImageHandler
 
 class PredictionHandler(RawImageHandler, PredictedImageHandler):
     def __init__(self,usr_obj):
-        super().__init__(usr_obj)
+        RawImageHandler.__init__(self,user_obj=usr_obj)
+        PredictedImageHandler.__init__(self,user_obj=usr_obj)
         self._usr_obj = usr_obj
         self.logger = logging.getLogger(__name__)
 
@@ -14,7 +15,7 @@ class PredictionHandler(RawImageHandler, PredictedImageHandler):
         LIMIT = 10
         offset = (page_number - 1) * LIMIT
         sql = """
-        SELECT i.image_id, i.input_image_path, i.created_at,COALESCE(i.predicted_image_path, '/static/predicted_images/12.png') AS predicted_image_path,it.tag_name
+        SELECT i.image_id, i.input_image_path, i.created_at,i.predicted_image_path,it.tag_name
         FROM image i
         JOIN image_tags it ON it.image_id = i.image_id
         WHERE i.uploader_id = %s
@@ -24,6 +25,8 @@ class PredictionHandler(RawImageHandler, PredictedImageHandler):
         params = (self._user_obj.id, LIMIT, offset)
         try:
             data = DatabaseHandler.run_select_query(sql, params)
+            if data[0]['predicted_image_path'] is None:
+                data[0]['predicted_image_path'] = '/static/predicted_images/error.png'
             return data
         except Exception as e:
             self.logger.error(f'Error occurred: {e}')
@@ -33,7 +36,7 @@ class PredictionHandler(RawImageHandler, PredictedImageHandler):
         LIMIT = 10
         offset = (page_number - 1) * LIMIT
         sql = """
-        SELECT i.image_id, i.input_image_path, i.created_at,COALESCE(i.predicted_image_path, '/static/predicted_images/12.png') AS predicted_image_path, it.tag_name
+        SELECT i.image_id, i.input_image_path, i.created_at,i.predicted_image_path, it.tag_name
         FROM image i
         JOIN image_tags it ON it.image_id = i.image_id
         WHERE i.uploader_id = %s
@@ -43,18 +46,21 @@ class PredictionHandler(RawImageHandler, PredictedImageHandler):
         params = (self._user_obj.id, LIMIT, offset)
         try:
             data = DatabaseHandler.run_select_query(sql, params)
+            if data[0]['predicted_image_path'] is None:
+                data[0]['predicted_image_path'] = '/static/predicted_images/error.png'
             return data
         except Exception as e:
             self.logger.error(f'Error occurred: {e}')
             return False
 
-    def get_predicted_images(self):
-        sql = 'SELECT image_id, input_image_path,created_at FROM image WHERE image_id = %s '
+    def get_predicted_image(self):
+        sql = 'SELECT image_id, input_image_path,predicted_image_path,created_at FROM image WHERE image_id = %s '
         params = (self._image_id,)
         try:
             data = DatabaseHandler.run_select_query(sql, params)
             if data:
-                data[0]['predicted_image_path'] = '/static/predicted_images/12.png'
+                if not data[0]['predicted_image_path']:
+                    data[0]['predicted_image_path'] = '/static/predicted_images/error.png'
             return data[0]
         except Exception as e:
             self.logger.error(f'Error occurred: {e}')
@@ -77,7 +83,7 @@ class PredictionHandler(RawImageHandler, PredictedImageHandler):
         OFFSET = (int(page) - 1) * LIMIT
 
         sql = """
-        SELECT i.*, COALESCE(i.predicted_image_path, '/static/predicted_images/12.png') AS predicted_image_path
+        SELECT i.*
         FROM image_tags it1
         JOIN image_tags it2 ON 6371 * acos(
             cos(radians(SUBSTRING_INDEX(it1.tag_name, ',', 1))) *
@@ -95,4 +101,6 @@ class PredictionHandler(RawImageHandler, PredictedImageHandler):
         except Exception as e:
             self.logger.error(f'Error occurred: {e}')
             return False
+        if data[0]['predicted_image_path'] is None:
+            data[0]['predicted_image_path'] = '/static/predicted_images/error.png'
         return data

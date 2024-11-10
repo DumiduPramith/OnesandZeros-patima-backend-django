@@ -39,6 +39,7 @@ class Command(BaseCommand, QueryHelper):
                 self.execute_query(query2, (last_row,))
         except Exception as e:
             print(e)
+
     def __predictions(self,input_image_path, predicted_image_path, uploader_id, tags):
         try:
             with transaction.atomic():

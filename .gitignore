@@ -12,6 +12,11 @@ django-app/patima/.env
 .env
 .env.prod
 .env.dev
-/static
+static
 angular/
 docker-compose.prod.yml
+.keras
+
+# AI Model
+checkpoint
+ml_handler.py

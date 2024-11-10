@@ -19,6 +19,8 @@ services:
     build:
       context: django-app
       dockerfile: Dockerfile
+      args:
+        BUILD_ENV: "development"
     container_name: patima-backend
     environment:
       DB_NAME: ${MYSQL_DATABASE}
@@ -89,6 +91,7 @@ services:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf
       - ./nginx/conf.d:/etc/nginx/conf.d
       - ./static:/app/static
+      - ./django-app/static:/app/static
     networks:
       - nginx-network
     depends_on:

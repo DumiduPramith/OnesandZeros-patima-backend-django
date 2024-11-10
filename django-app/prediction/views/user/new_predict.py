@@ -17,12 +17,12 @@ class Predict(APIView):
         # Code to predict
         user_obj = request.user
         if 'json' not in request.POST:
-            return JsonResponse({'status': 'success', 'message': 'JSON not found'}, status=400)
+            return JsonResponse({'status': 'error', 'message': 'JSON not found'}, status=400)
         try:
             json_data = json.loads(request.POST['json'])
             print(json_data)
         except json.JSONDecodeError:
-            return JsonResponse({'status': 'success', 'message': 'Invalid JSON'}, status=400)
+            return JsonResponse({'status': 'error', 'message': 'Invalid JSON'}, status=400)
         try:
             image_file = request.FILES.get('image')
         except Exception as e:
@@ -35,11 +35,15 @@ class Predict(APIView):
             if not prediction_handler.save_image(image_file):
                 return JsonResponse({'status': 'success', 'message': 'Error occurred while saving image'}, status=500)
             status = prediction_handler.save_db()
+            if status:
+                result = prediction_handler.predict(image_file)
             longitude = json_data['longitude']
             latitude = json_data['latitude']
             status1 = prediction_handler.save_locations(longitude, latitude)
+            if status1 is False:
+                return JsonResponse({'status': 'error', 'message': 'Error occurred while saving locations'}, status=500)
             if status:
-                result = prediction_handler.get_predicted_images()
+                result = prediction_handler.get_predicted_image()
                 return JsonResponse({'status': 'success', 'prediction': result}, status=200)
             else:
                 return JsonResponse({'status': 'error', 'message': 'Error occurred while saving image'}, status=500)

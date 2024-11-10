@@ -25,7 +25,9 @@ INSTALLED_APPS = [
     'sqlcommands',
     'users',
     'common',
-    'admin_messages'
+    'admin_messages',
+    'feedback',
+    'prediction',
 ]
 
 REST_FRAMEWORK = {
@@ -148,4 +150,5 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 RAW_IMAGE_SAVING_PATH = os.getenv('RAW_IMAGE_SAVING_PATH')
+PREDICTED_IMAGE_SAVING_PATH = os.getenv('PREDICTED_IMAGE_SAVING_PATH')
 PROFILE_PICTURE_SAVING_PATH = os.getenv('PROFILE_PICTURE_SAVING_PATH')
