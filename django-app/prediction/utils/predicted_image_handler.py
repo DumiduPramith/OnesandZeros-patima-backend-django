@@ -18,7 +18,8 @@ class PredictedImageHandler:
         self._image_extension = '.jpg'
         self._img_saved_path = None
         self._processed = False
-        self.generator = apps.get_app_config('prediction').generator
+        self.step1_generator = apps.get_app_config('prediction').step1_generator
+        self.step2_generator = apps.get_app_config('prediction').step2_generator
 
     def _save_db(self):
         if not self._processed:
@@ -79,12 +80,15 @@ class PredictedImageHandler:
         input_image = self._normalize(input_image)
         input_image = tf.expand_dims(input_image, 0)
 
-        generated_image = self.generator(input_image, training=False)
+        generated_image = self.step1_generator(input_image, training=True)
+        generated_image = self.step2_generator(generated_image, training=True)
         if os.getenv('DJANGO_ENV') == 'dev':
             plt.subplot(1, 2, 1)
             plt.imshow(generated_image[0] * 0.5 + 0.5)
+            plt.title('Generated Image')
             plt.subplot(1, 2, 2)
             plt.imshow(input_image[0] * 0.5 + 0.5)
+            plt.title('Input Image')
             plt.show()
 
         status = self._save_image(generated_image)

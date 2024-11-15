@@ -56,8 +56,10 @@ class FeedbackHandler(DatabaseHandler):
                    """
         try:
             result=  self.run_select_query(query)
-            if result[0]['predicted_image_path'] is None:
-                result[0]['predicted_image_path'] = '/static/predicted_images/error.png'
+            if result:
+                if result[0]['predicted_image_path'] is None:
+                    result[0]['predicted_image_path'] = '/static/predicted_images/error.png'
+            return result
         except Exception as e:
             self.logger.error(f"Error occurred while getting feedbacks by user id: {e}")
             return False
@@ -71,8 +73,10 @@ class FeedbackHandler(DatabaseHandler):
         """
         try:
             result = self.run_select_query(sql, (predicted_id,))
-            if result[0]['predicted_image_path'] is None:
-                result[0]['predicted_image_path'] = '/static/predicted_images/error.png'
+            if result:
+                if result[0]['predicted_image_path'] is None:
+                    result[0]['predicted_image_path'] = '/static/predicted_images/error.png'
+            return result
         except Exception as e:
             self.logger.error(f"Error occurred while getting feedbacks by predicted id: {e}")
             return False

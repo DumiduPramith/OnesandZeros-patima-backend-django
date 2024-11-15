@@ -19,6 +19,7 @@ services:
     build:
       context: django-app
       dockerfile: Dockerfile
+      network: host
       args:
         BUILD_ENV: "development"
     container_name: patima-backend

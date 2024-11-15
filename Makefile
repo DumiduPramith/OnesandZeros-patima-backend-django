@@ -30,7 +30,6 @@ docker-down:
 docker-initial:
 	docker exec patima-backend sh -c "make create-tables && make initial-data && make collect-static"
 
-
 .PHONY: docker-full-clear
 docker-full-clear:
 	@containers=$$(docker ps -aq); \
