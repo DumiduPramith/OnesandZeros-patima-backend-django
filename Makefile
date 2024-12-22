@@ -22,6 +22,14 @@ docker-up-dev:
 docker-up-dev-d:
 	docker compose -f docker-compose.dev.yml up -d
 
+.PHONY: docker-stop
+docker-stop:
+	docker compose -f docker-compose.prod.yml stop
+
+.PHONY: docker-stop-dev
+docker-stop-dev:
+	docker compose -f docker-compose.dev.yml stop
+
 .PHONY: docker-down
 docker-down:
 	docker compose -f docker-compose.prod.yml down

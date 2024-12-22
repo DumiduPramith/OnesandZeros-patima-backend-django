@@ -26,3 +26,5 @@ sudo apt-get install -y git-lfs || { echo "Failed to install Git LFS"; exit 1; }
 
 # Display a message for the user
 echo "Docker and Git LFS have been installed successfully. Please log out and log back in to use Docker without sudo."
+git lfs install
+git lfs pull
