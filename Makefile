@@ -46,3 +46,7 @@ docker-full-clear:
 	if [ -n "$$volumes" ]; then \
 		docker volume rm $$volumes; \
 	fi
+
+.PHONY: configure-server
+configure-server:
+	chmod +x script.sh && ./script.sh
