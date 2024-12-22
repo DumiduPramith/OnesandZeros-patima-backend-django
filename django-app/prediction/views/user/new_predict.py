@@ -29,21 +29,24 @@ class Predict(APIView):
             logger.error(f'Error occurred: {e}')
             return JsonResponse({'message': 'Internal server error'}, status=500)
         if not image_file:
-            return JsonResponse({'status': 'success', 'message': 'Image not found'}, status=400)
+            return JsonResponse({'status': 'error', 'message': 'Image not found'}, status=400)
         else:
-            prediction_handler = PredictionHandler(user_obj)
-            if not prediction_handler.save_image(image_file):
-                return JsonResponse({'status': 'success', 'message': 'Error occurred while saving image'}, status=500)
-            status = prediction_handler.save_db()
+            predictionHandler = PredictionHandler(user_obj)
+            if not predictionHandler.save_raw_image_file(image_file):
+                return JsonResponse({'status': 'error', 'message': 'Error occurred while saving image'}, status=500)
+            status = predictionHandler.save_raw_image_db()
             if status:
-                result = prediction_handler.predict(image_file)
+                predicted_image = predictionHandler.predict(image_file)
+                status = predictionHandler.save_predicted_image_file(predicted_image)
+                if status:
+                    status = predictionHandler.save_predicted_image_db()
             longitude = json_data['longitude']
             latitude = json_data['latitude']
-            status1 = prediction_handler.save_locations(longitude, latitude)
+            status1 = predictionHandler.save_locations(longitude, latitude)
             if status1 is False:
                 return JsonResponse({'status': 'error', 'message': 'Error occurred while saving locations'}, status=500)
             if status:
-                result = prediction_handler.get_predicted_image()
+                result = predictionHandler.get_predicted_image()
                 return JsonResponse({'status': 'success', 'prediction': result}, status=200)
             else:
                 return JsonResponse({'status': 'error', 'message': 'Error occurred while saving image'}, status=500)

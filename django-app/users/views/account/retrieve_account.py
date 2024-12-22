@@ -7,6 +7,7 @@ class RetrieveAccount(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
+
         user = request.user
         account_details = user.get_account_details()
         if account_details is False:

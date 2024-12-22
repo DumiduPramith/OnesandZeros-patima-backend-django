@@ -9,10 +9,11 @@ services:
       MYSQL_PASSWORD: ${MYSQL_USER_PASSWORD}
     networks:
       - db-network
-    ports:
-      - "3306:3306"
+#    ports:
+#      - "3306:3306"
     volumes:
       - patima-db-data:/var/lib/mysql
+#      - ./mysql/mysql-init-scripts/init-permissions.sql:/docker-entrypoint-initdb.d/init-permissions.sql
   #      - ./mysql/init.sql:/docker-entrypoint-initdb.d/init.sql
 
   backend:
